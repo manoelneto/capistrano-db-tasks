@@ -111,9 +111,14 @@ module Database
           @config = @cap.capture(:rails, 'runner "puts ActiveRecord::Base.connection.instance_variable_get(:@config).to_yaml"', '2>/dev/null')
           # Remove all bundler and rails initialization warnings and errors
           @config = @config.split($/)[@config.split($/).rindex("---")..-1].join($/)
+          @config = @config.split($/)[0..@config.split($/).rindex("Usage:")].join($/)
         end
       end
+      
       @config = YAML.load(@config)
+      @config.keys.each do |key|
+        @config[key.to_s] = @config[key]
+      end
     end
 
     def dump
