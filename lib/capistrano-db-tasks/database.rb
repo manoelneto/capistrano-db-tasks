@@ -111,7 +111,9 @@ module Database
           @config = @cap.capture(:rails, 'runner "puts ActiveRecord::Base.connection.instance_variable_get(:@config).to_yaml"', '2>/dev/null')
           # Remove all bundler and rails initialization warnings and errors
           @config = @config.split($/)[@config.split($/).rindex("---")..-1].join($/)
-          @config = @config.split($/)[0..@config.split($/).rindex("Usage:")].join($/)
+          if @cap.fetch :must_skip_usage
+            @config = @config.split($/)[0..@config.split($/).rindex("Usage:")].join($/)
+          end
         end
       end
       
